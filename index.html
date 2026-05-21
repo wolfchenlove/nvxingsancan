@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>三餐合集｜日常·月子·减脂（科学月子餐）</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui, -apple-system, sans-serif;}
+body{background:#f7f9fa;padding:10px;}
+.container{max-width:480px;margin:0 auto;background:#fff;border-radius:14px;padding:16px;box-shadow:0 2px 10px rgba(0,0,0,0.06);}
+.title{text-align:center;font-size:18px;color:#333;margin-bottom:6px;}
+.desc{text-align:center;font-size:12px;color:#666;margin-bottom:10px;line-height:1.4;}
+.mode-group{display:flex;gap:6px;margin-bottom:12px;}
+.mode-group button{flex:1;padding:8px;border:none;border-radius:8px;font-size:12px;background:#ddd;}
+.mode-group button.active{background:#228b22;color:#fff;}
+.rule{background:#f8f9fa;border-radius:10px;padding:10px;font-size:12px;line-height:1.5;color:#555;margin-bottom:12px;display:none;}
+.btn-group{display:flex;gap:8px;margin-bottom:12px;}
+.btn-group button{flex:1;padding:10px 8px;border:none;border-radius:8px;font-size:13px;background:#228b22;color:#fff;}
+.single-group{display:flex;gap:8px;margin-bottom:16px;}
+.single-group button{flex:1;padding:9px 6px;border:none;border-radius:8px;font-size:12px;}
+.btn-bf{background:#ff8800;color:#fff;}
+.btn-lu{background:#d83030;color:#fff;}
+.btn-din{background:#2d7ddf;color:#fff;}
+.recommend{background:#f8f9fa;border-radius:10px;padding:12px;margin-bottom:14px;display:none;}
+.rec-title{font-size:14px;color:#333;margin-bottom:8px;font-weight:500;}
+.rec-item{background:#fff;padding:8px;border-radius:6px;margin-bottom:6px;font-size:13px;line-height:1.4;}
+table{width:100%;border-collapse:collapse;}
+th{background:#f0f8f0;color:#228b22;font-size:12px;padding:8px 4px;}
+td{font-size:12px;padding:7px 4px;border-top:1px solid #f4f4f4;line-height:1.4;word-break:break-all;}
+.t-bf{color:#ff7700;}
+.t-lu{color:#d82a2a;}
+.t-din{color:#2772d2;}
+.t-sn{color:#a742b9;}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="title">三餐合集</div>
+  <div class="desc">日常餐｜月子餐｜减脂餐｜一键切换</div>
+
+  <div class="mode-group">
+    <button class="active" data-mode="daily">日常餐</button>
+    <button data-mode="maternity">月子餐</button>
+    <button data-mode="fit">减脂餐</button>
+  </div>
+
+  <div class="rule" id="ruleBox"></div>
+
+  <div class="btn-group">
+    <button id="generate">生成30天食谱</button>
+    <button id="copy">一键复制全部食谱</button>
+  </div>
+
+  <div class="single-group">
+    <button class="btn-bf" id="rBf">随机3款早餐</button>
+    <button class="btn-lu" id="rLu">随机3款午餐</button>
+    <button class="btn-din" id="rDin">随机3款晚餐</button>
+  </div>
+
+  <div class="recommend" id="recBox">
+    <div class="rec-title" id="recTitle">推荐菜品</div>
+    <div id="recList"></div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>天数</th>
+        <th class="t-bf">早餐</th>
+        <th class="t-lu">午餐</th>
+        <th class="t-din">晚餐</th>
+        <th class="t-sn">加餐</th>
+      </tr>
+    </thead>
+    <tbody id="mealBody"></tbody>
+  </table>
+</div>
+
+<script>
+// ========== 1. 日常餐（30天） ==========
+const daily = {
+breakfast: [
+"小米粥配水煮蛋","燕麦牛奶粥+茶叶蛋","全麦吐司+热豆浆","甜玉米+鸡蛋羹",
+"蒸红薯+原味酸奶","葱花卷+煎荷包蛋","杂粮八宝粥+鲜肉包子","南瓜粥+蔬菜蒸饺",
+"清汤鸡蛋面+小菜","紫薯山药+纯牛奶","青菜瘦肉粥+豆沙包","蒸芋头+卤蛋",
+"黑芝麻糊+鸡蛋饼","白粥+肉松馒头","山药粥+菜包","玉米糊+煎蛋卷",
+"豆浆+葱油饼","银耳粥+水煮鸭蛋","牛奶泡麦片+小馒头","萝卜丝饼+小米汤",
+"南瓜馒头+温牛奶","青菜粥+鸡蛋卷","黑米粥+蒸饺","面片汤+卤鸡蛋",
+"红豆粥+花卷","燕麦糊+蔬菜蛋饼","雪梨粥+软面包","薏米粥+鲜肉烧麦",
+"南瓜羹+煎蛋","玉米粥+全麦饼"
+],
+lunch: [
+"白米饭+青椒肉丝+清炒油麦菜","杂粮饭+红烧肉+清炒土豆丝","糙米饭+糖醋里脊+凉拌黄瓜",
+"大米饭+回锅肉+手撕包菜","米饭+梅菜扣肉+蒜蓉生菜","米饭+农家小炒肉+清炒豆芽",
+"米饭+黑椒牛柳+清炒西兰花","米饭+土豆炖牛腩+胡萝卜片","米饭+芹菜炒牛肉+娃娃菜",
+"米饭+红烧牛肉+清炒冬瓜","米饭+水煮牛肉+凉拌生菜","米饭+葱爆牛肉+香菇青菜",
+"米饭+胡萝卜炖羊肉+大白菜","米饭+孜然羊肉+凉拌木耳","米饭+葱爆羊肉+清炒菠菜",
+"米饭+青椒牛蛙+清炒丝瓜","米饭+紫苏牛蛙+时令青菜","米饭+青椒牛蛙+炒西葫芦",
+"米饭+干锅牛蛙+凉拌藕片","蛋炒饭+番茄炒蛋+凉拌紫甘蓝","土豆焖饭+香煎鸡胸+青菜汤",
+"米饭+粉蒸肉+清炒芥蓝","米饭+芹菜炒猪肉+干煸豆角","米饭+排骨炖萝卜+清炒茼蒿",
+"米饭+香菇滑鸡+炒小白菜","米饭+红烧鸡块+凉拌海带","米饭+腐竹烧肉+清炒笋片",
+"米饭+小炒黄牛肉+凉拌三丝","米饭+羊肉炖豆腐+炒生菜","米饭+牛蛙烧莴笋+清炒空心菜"
+],
+dinner: [
+"清汤挂面+豆腐青菜","杂粮粥+香蒸肉饼","蒸甜玉米+瘦肉炒西葫芦",
+"清汤米粉+鸡蛋炒丝瓜","小碗米饭+瘦肉丸子清汤","蒸南瓜+菌菇瘦肉煲",
+"山药养胃粥+清炒杂蔬","青菜面片+凉拌嫩豆腐","紫薯粥+鸡蛋炒木耳",
+"小米清汤粥+清炒瘦肉丝","荞麦面+番茄鸡蛋卤","蒸山药+白菜炖豆腐",
+"青菜粥+炒鸡蛋黄瓜","蔬菜小馄饨+凉拌黄瓜","红豆薏米粥+清炒豆干",
+"冬瓜瘦肉汤+全麦馒头","丝瓜蛋汤+蒸红薯","菌菇汤+素炒时蔬",
+"白菜豆腐煲+小份米饭","瘦肉丝瓜粥+凉拌豆芽","胡萝卜粥+煎嫩蛋",
+"清汤乌冬面+青菜","蒸芋头+鸡蛋炒番茄","生菜瘦肉粥+凉拌千张",
+"西葫芦鸡蛋汤+玉米馒头","豆芽瘦肉粥+清炒生菜","南瓜清汤面+卤豆干",
+"萝卜瘦肉粥+凉拌青菜","菌菇鸡蛋面+小咸菜","青菜豆腐粥+蒸蛋"
+],
+snack: [
+"原味核桃仁","巴旦木坚果","原味熟花生","全脂纯牛奶","新鲜苹果",
+"香甜香蕉","奇异果","无糖原味酸奶","去核红枣干","圣女果",
+"原味腰果","鲜橙子","梨子","常温奶酪小块","草莓",
+"芒果果肉","葡萄干","原味南瓜子","鲜柚子肉","小番茄",
+"黑芝麻丸","鲜葡萄","鲜火龙果","脆冬枣","青皮橘子",
+"原味松子仁","鲜枇杷","无花果干","常温乳酸菌","鲜油桃"
+]
+};
+
+// ========== 2. 科学月子餐（严格分周） - 补全至30天 ==========
+const maternity = {
+breakfast: [
+// 第1周（清淡）- 7天
+"小米粥+水煮蛋","小米粥+鸡蛋羹","小米粥+蒸南瓜","小米粥+蒸山药",
+"小米粥+青菜蛋花汤","小米粥+软馒头","小米粥+红枣",
+// 第2周（温和）- 7天
+"燕麦粥+鸡蛋羹","南瓜粥+水煮蛋","红豆粥+鸡蛋羹","杂粮粥+蒸蛋",
+"鸡丝小米粥+小馒头","山药瘦肉粥+鸡蛋","小米粥+蒸芋头",
+// 第3-4周（进补）- 16天
+"小米粥+奶香小馒头","小米粥+蔬菜蛋卷","小米粥+蒸土豆","小米粥+红枣糕",
+"小米粥+蒸紫薯","小米粥+核桃碎","小米粥+桂圆肉","小米粥+枸杞蛋",
+"小米粥+软饼","小米粥+蒸板栗","小米粥+银耳羹","小米粥+花生糊",
+"山药粥+水煮蛋","小米粥+蒸胡萝卜","小米粥+红枣小米糕","小米粥+莲子羹"
+],
+lunch: [
+// 第1周（清淡、少油、无浓汤）- 7天
+"软米饭+瘦肉丝炒青菜+青菜汤","软米饭+番茄炒蛋+冬瓜汤","软米饭+清蒸鸡蛋+清炒时蔬",
+"软米饭+豆腐炒青菜+丝瓜汤","软米饭+去皮鸡胸炒西兰花+清汤","软米饭+青菜瘦肉汤+蒜蓉油麦菜",
+"软米饭+山药瘦肉片+木耳汤",
+// 第2周（温和补气血）- 7天
+"软米饭+黄豆排骨汤（少油）+青菜","软米饭+姜丝瘦肉+芦笋","软米饭+香菇滑鸡（少油）+三丝",
+"软米饭+板栗瘦肉+春笋","软米饭+党参鸡汤（少油）+藕片","软米饭+芹菜瘦肉+荷兰豆",
+"软米饭+猪肝菠菜+生菜",
+// 第3-4周（催乳进补）- 16天
+"软米饭+无花果排骨+生菜","软米饭+番茄牛肉+菜心","软米饭+红枣焖鸡+千张",
+"软米饭+笋片瘦肉+空心菜","软米饭+白芷鸡汤+冬瓜","软米饭+胡萝卜瘦肉+菌菇",
+"软米饭+土豆焖鸡+豆角","软米饭+麦冬排骨+青菜","软米饭+丝瓜瘦肉+西兰花",
+"软米饭+番茄鸡蛋+油麦菜","软米饭+豆腐瘦肉+娃娃菜","软米饭+花生炖猪蹄+清炒菠菜",
+"软米饭+鲫鱼豆腐汤+菜心","软米饭+排骨炖黄豆+油麦菜","软米饭+乌鸡红枣汤+西兰花",
+"软米饭+山药炖排骨+生菜"
+],
+dinner: [
+// 第1周（清淡）- 7天
+"小米粥+鸡蛋羹+青菜","小米粥+清蒸瘦肉片+菠菜","小米粥+豆腐青菜汤+蒸南瓜",
+"小米粥+番茄蛋花汤+油麦菜","小米粥+瘦肉丝炒冬瓜+清汤","小米粥+菌菇豆腐汤+山药",
+"小米粥+青菜豆腐+花卷",
+// 第2周（温和）- 7天
+"小米粥+银耳瘦肉汤+胡萝卜","小米粥+鸡丝米粉+蒸芋头","小米粥+菠菜鸡蛋+西葫芦",
+"小米粥+西葫芦瘦肉汤+小饼","小米粥+豆芽粥+蒸蛋","小米粥+清汤杂粮面+青菜",
+"小米粥+胡萝卜瘦肉+生菜",
+// 第3-4周（进补）- 16天
+"小米粥+鸡丝粥+糕点","小米粥+冬瓜鸡蛋汤+土豆","小米粥+青菜杂粮粥+肉丝",
+"小米粥+南瓜瘦肉面+小菜","小米粥+菌菇豆腐汤+馒头","小米粥+萝卜粥+蒸蛋",
+"小米粥+丝瓜鸡蛋+娃娃菜","小米粥+瘦肉青菜面+蒸紫薯","小米粥+山药瘦肉面+蒸红薯",
+"小米粥+杂粮粥+蒸肉饼","小米粥+花生猪蹄汤+蒸山药","小米粥+鲫鱼豆腐粥+青菜",
+"小米粥+排骨粥+蒸南瓜","小米粥+乌鸡粥+胡萝卜","小米粥+红枣桂圆粥+蒸芋头",
+"小米粥+枸杞小米粥+蒸红薯"
+],
+snack: [
+// 全周期通用 - 补全至30天
+"温红糖姜茶","温红枣桂圆茶","温纯牛奶","蒸苹果","水煮花生",
+"原味核桃","温豆浆","红糖蒸雪梨","桂圆肉","蒸山药",
+"温羊奶","水煮红豆","温银耳羹","枸杞水","蒸香蕉",
+"花生糊","温百合水","红枣糕","巴旦木","温益母草茶",
+"蒸雪梨","温酸奶","芡实羹","板栗仁","南瓜泥",
+"黑芝麻糊","温百合汤","五红汤","小米南瓜糊","温红枣水"
+]
+};
+
+// ========== 3. 减脂餐（30天） ==========
+const fit = {
+breakfast: [
+"燕麦牛奶+水煮蛋+小苹果","全麦面包2片+煎蛋+无糖豆浆","玉米半根+鸡蛋羹+黑咖啡",
+"红薯1小块+希腊酸奶+蓝莓","小米粥+水煮蛋+凉拌黄瓜","紫薯+纯牛奶+水煮蛋",
+"无糖豆浆+鸡蛋+全麦馒头半个","燕麦粥+水煮蛋+圣女果","全麦三明治（鸡蛋+生菜）",
+"蒸山药+无糖酸奶+坚果5颗","南瓜粥+水煮蛋+橙子","藜麦粥+鸡蛋+小番茄",
+"全麦饼+鸡蛋+无糖牛奶","黑麦面包+鸡蛋+黄瓜条","玉米糊+水煮蛋+梨",
+"无糖酸奶+燕麦+香蕉半根","鸡蛋蔬菜饼+豆浆+苹果","红豆粥+水煮蛋+猕猴桃",
+"全麦吐司+花生酱少量+牛奶","小米燕麦粥+鸡蛋+草莓","蒸芋头+酸奶+坚果",
+"无糖豆浆+全麦包子半个+鸡蛋","燕麦杯+鸡蛋+火龙果","全麦卷饼（鸡蛋+生菜）",
+"南瓜+无糖酸奶+水煮蛋","黑米燕麦粥+鸡蛋+柚子","全麦面包+煎蛋+小黄瓜",
+"山药粥+鸡蛋+蓝莓","无糖酸奶+燕麦+坚果"
+],
+lunch: [
+"糙米饭+香煎鸡胸肉+清炒西兰花","杂粮饭+瘦牛肉炒彩椒+凉拌菠菜","藜麦饭+卤鸡腿（去皮）+蒜蓉油麦菜",
+"糙米+清炒瘦猪肉+凉拌黄瓜","杂粮饭+番茄炒蛋+清炒娃娃菜","糙米饭+豆腐炖鸡胸+清炒豆芽",
+"荞麦饭+黑椒牛柳+凉拌生菜","杂粮饭+香煎鸡胸+清炒芦笋","糙米饭+芹菜炒牛肉+凉拌木耳",
+"藜麦饭+清蒸鸡胸+清炒油麦菜","糙米+冬瓜炖瘦牛肉+凉拌番茄","杂粮饭+青椒瘦肉丝+清炒菠菜",
+"糙米饭+香菇滑鸡+凉拌三丝","杂粮饭+胡萝卜炖瘦牛肉+清炒白菜","糙米饭+瘦牛肉炖萝卜+凉拌生菜",
+"藜麦饭+香煎鸡胸+清炒芥蓝","糙米+番茄炖牛腩+凉拌黄瓜","杂粮饭+腐竹烧瘦猪肉+清炒西兰花",
+"糙米饭+小炒瘦牛肉+凉拌紫甘蓝","杂粮饭+清蒸鸡胸+清炒空心菜","糙米饭+瘦猪肉炒豆角+凉拌菠菜",
+"藜麦饭+鸡胸肉丸子汤+清炒生菜","糙米+菌菇炒鸡胸+凉拌黄瓜","杂粮饭+瘦牛肉炒西兰花+凉拌木耳",
+"糙米饭+冬瓜炖鸡胸+清炒油麦菜","杂粮饭+番茄炒蛋+凉拌生菜","糙米饭+清炒瘦牛肉+清炒娃娃菜",
+"藜麦饭+香煎鸡胸+凉拌黄瓜","糙米+豆腐炒鸡胸+清炒菠菜"
+],
+dinner: [
+"鸡胸肉蔬菜沙拉+全麦面包1片","豆腐菌菇汤+蒸红薯小块","清炒鸡胸+蒜蓉油麦菜+小米粥半碗",
+"番茄鸡蛋汤+凉拌菠菜+玉米半根","瘦牛肉炒西兰花+冬瓜汤","清蒸鸡胸+清炒娃娃菜+小米粥",
+"蔬菜豆腐煲+紫薯小块","香煎鸡胸+凉拌黄瓜+小米粥半碗","菌菇鸡胸汤+清炒油麦菜",
+"瘦牛肉炒彩椒+蒜蓉菠菜","鸡蛋炒丝瓜+凉拌生菜+玉米","豆腐炒青菜+冬瓜汤+红薯小块",
+"鸡胸肉炒芦笋+凉拌番茄","番茄炖瘦牛肉+清炒生菜","清蒸鸡胸+凉拌木耳+小米粥",
+"菌菇豆腐汤+凉拌菠菜+紫薯","瘦牛肉炒菠菜+蒜蓉油麦菜","鸡蛋炒冬瓜+凉拌黄瓜+玉米",
+"鸡胸肉炒西兰花+冬瓜汤","清炒瘦猪肉+清炒娃娃菜+小米粥","蔬菜鸡胸汤+凉拌生菜",
+"豆腐炒菌菇+凉拌菠菜+红薯小块","瘦牛肉炒豆芽+蒜蓉油麦菜","鸡蛋炒木耳+凉拌黄瓜+玉米",
+"清蒸鸡胸+清炒空心菜+小米粥","菌菇鸡胸汤+凉拌番茄","瘦牛肉炒芦笋+清炒生菜",
+"番茄鸡蛋汤+凉拌木耳+紫薯","豆腐炒青菜+蒜蓉菠菜+小米粥"
+],
+snack: [
+"原味坚果5-8颗","无糖酸奶1小杯","苹果半个","蓝莓/草莓一小把",
+"黄瓜1根","小番茄10颗","水煮蛋1个","蒸南瓜小块",
+"纯牛奶150ml","猕猴桃1个","梨半个","橙子1个",
+"无糖豆浆150ml","紫薯小块","玉米半根","原味巴旦木5颗",
+"黑咖啡（无糖）","西柚半个","火龙果小块","无糖希腊酸奶",
+"水煮毛豆少量","胡萝卜条","无糖燕麦棒1根","桂圆2-3颗",
+"蒸山药小块","无糖椰汁少量","红枣2颗","原味核桃2颗"
+]
+};
+
+// 规则文案
+const rules = {
+daily: "🍚 日常餐｜均衡营养｜家常好做｜不重样",
+maternity: "🍼 科学月子餐｜1周清淡排恶露｜2周温和补气血｜3-4周催乳进补",
+fit: "🥗 减脂餐｜高蛋白｜低GI｜少油盐｜全年龄通用"
+};
+
+let current = daily;
+
+// 渲染整月 - 增加边界检查
+function renderAll() {
+  let html = "";
+  for (let i=0;i<30;i++) {
+    // 边界检查：如果数组长度不足，循环使用已有数据
+    const bf = current.breakfast[i] || current.breakfast[i % current.breakfast.length];
+    const lu = current.lunch[i] || current.lunch[i % current.lunch.length];
+    const din = current.dinner[i] || current.dinner[i % current.dinner.length];
+    const sn = current.snack[i] || current.snack[i % current.snack.length];
+    
+    html+=`
+    <tr>
+      <td>第${i+1}天</td>
+      <td class="t-bf">${bf}</td>
+      <td class="t-lu">${lu}</td>
+      <td class="t-din">${din}</td>
+      <td class="t-sn">${sn}</td>
+    </tr>`;
+  }
+  document.getElementById("mealBody").innerHTML = html;
+  document.getElementById("recBox").style.display = "none";
+}
+
+// 随机3个 - 修复边界问题
+function random3(arr) {
+  // 如果数组长度小于3，直接返回全部
+  if (arr.length <= 3) return arr;
+  
+  let temp = [...arr];
+  let res = [];
+  for(let i=0;i<3;i++){
+    let idx = Math.floor(Math.random()*temp.length);
+    res.push(temp.splice(idx,1)[0]);
+  }
+  return res;
+}
+
+// 展示推荐
+function showRec(title,list){
+  document.getElementById("recBox").style.display = "block";
+  document.getElementById("recTitle").innerText = title;
+  let items = random3(list);
+  let html = "";
+  items.forEach((it,i)=>{
+    html+=`<div class="rec-item">${i+1}. ${it}</div>`;
+  });
+  document.getElementById("recList").innerHTML = html;
+}
+
+// 复制 - 增加失败降级处理
+document.getElementById("copy").onclick = async function(){
+  try {
+    let name = current===daily?"日常餐":current===maternity?"月子餐":"减脂餐";
+    let txt = `📅 30天${name}\n${rules[name.replace('餐','')]}\n\n`;
+    document.querySelectorAll("#mealBody tr").forEach(tr=>{
+      let t = tr.querySelectorAll("td");
+      txt+=`${t[0].innerText}｜早餐：${t[1].innerText}｜午餐：${t[2].innerText}｜晚餐：${t[3].innerText}｜加餐：${t[4].innerText}\n`;
+    });
+    
+    // 尝试剪贴板API
+    await navigator.clipboard.writeText(txt);
+    alert("✅ 复制成功！");
+  } catch (err) {
+    // 降级处理：创建文本区域手动复制
+    const textArea = document.createElement('textarea');
+    textArea.value = txt;
+    document.body.appendChild(textArea);
+    textArea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textArea);
+    
+    alert(err.message ? "⚠️ 复制失败：" + err.message : "✅ 已通过备用方案复制成功！");
+  }
+};
+
+// 切换模式
+document.querySelectorAll(".mode-group button").forEach(btn=>{
+  btn.onclick = function(){
+    document.querySelectorAll(".mode-group button").forEach(b=>b.classList.remove("active"));
+    this.classList.add("active");
+    let m = this.dataset.mode;
+    current = m==="daily"?daily:m==="maternity"?maternity:fit;
+    document.getElementById("ruleBox").innerText = rules[m];
+    document.getElementById("ruleBox").style.display = "block";
+    renderAll();
+  };
+});
+
+// 绑定按钮
+document.getElementById("generate").onclick = renderAll;
+document.getElementById("rBf").onclick = ()=>showRec("早餐推荐",current.breakfast);
+document.getElementById("rLu").onclick = ()=>showRec("午餐推荐",current.lunch);
+document.getElementById("rDin").onclick = ()=>showRec("晚餐推荐",current.dinner);
+
+// 初始加载 - 显示默认规则
+window.onload = function() {
+  document.getElementById("ruleBox").innerText = rules.daily;
+  document.getElementById("ruleBox").style.display = "block";
+  renderAll();
+};
+</script>
+</body>
+</html>
